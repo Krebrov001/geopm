@@ -62,7 +62,10 @@ namespace geopm
         : BatchServerImp(client_pid, signal_config, control_config,
                          platform_io(), nullptr, nullptr, nullptr)
     {
-
+        // Fork the server when calling real constructor.
+        auto setup = [this]() {this->create_shmem();};
+        auto run = [this]() {this->run_batch();};
+        m_server_pid = fork_with_setup(setup, run);
     }
 
     BatchServerImp::BatchServerImp(int client_pid,
@@ -73,31 +76,19 @@ namespace geopm
                                    std::shared_ptr<SharedMemory> signal_shmem,
                                    std::shared_ptr<SharedMemory> control_shmem)
         : m_client_pid(client_pid)
+        , m_server_key(std::to_string(m_client_pid))
         , m_signal_config(signal_config)
         , m_control_config(control_config)
         , m_pio(pio)
         , m_signal_shmem(signal_shmem)
         , m_control_shmem(control_shmem)
-        , m_batch_status(batch_status)
-        , m_server_key(std::to_string(m_client_pid))
+        , m_batch_status(batch_status != nullptr ?
+                         batch_status : BatchStatus::make_unique_server(m_client_pid,
+                                                                        m_server_key))
         , m_server_pid(0)
-        , m_is_active(false)
+        , m_is_active(true)
     {
-        bool is_test = (m_batch_status != nullptr);
-        if (!is_test) {
-            m_batch_status = BatchStatus::make_unique_server(m_client_pid, m_server_key);
-        }
-        else {
-            GEOPM_DEBUG_ASSERT(m_signal_shmem != nullptr &&
-                               m_control_shmem != nullptr,
-                               "BatchServer: Called test constructor with null values");
-        }
-        if (!is_test) {
-            auto setup = [this]() {this->create_shmem();};
-            auto run = [this]() {this->run_batch();};
-            m_server_pid = fork_with_setup(setup, run);
-        }
-        m_is_active = true;
+
     }
 
     BatchServerImp::~BatchServerImp()
