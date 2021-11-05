@@ -195,18 +195,19 @@ namespace geopm
         // Create shared memory regions
         size_t signal_size = m_signal_config.size() * sizeof(double);
         size_t control_size = m_control_config.size() * sizeof(double);
-        std::string shmem_prefix = "/geopm-service-" + m_server_key;
+        std::string shmem_prefix_signal = M_SHMEM_PREFIX + m_server_key + "-signal";
+        std::string shmem_prefix_control = M_SHMEM_PREFIX + m_server_key + "-control";
         int uid = pid_to_uid(m_client_pid);
         int gid = pid_to_gid(m_client_pid);
         if (signal_size != 0) {
             m_signal_shmem = SharedMemory::make_unique_owner_secure(
-                shmem_prefix + "-signals", signal_size);
+                shmem_prefix_signal, signal_size);
             // Requires a chown if server is different user than client
             m_signal_shmem->chown(uid, gid);
         }
         if (control_size != 0) {
             m_control_shmem = SharedMemory::make_unique_owner_secure(
-                shmem_prefix + "-controls", control_size);
+                shmem_prefix_control, control_size);
             // Requires a chown if server is different user than client
             m_control_shmem->chown(uid, gid);
         }

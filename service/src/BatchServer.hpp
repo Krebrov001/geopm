@@ -116,6 +116,7 @@ namespace geopm
             virtual void stop_batch(void) = 0;
             /// @brief Returns true if the batch server is running
             virtual bool is_active(void) const = 0;
+            static constexpr const char* M_SHMEM_PREFIX = "/geopm-service-batch-buffer-";
     };
 
     class BatchServerImp : public BatchServer
