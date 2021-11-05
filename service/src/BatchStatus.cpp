@@ -178,8 +178,8 @@ namespace geopm
     // The constructor which is called by the client.
     BatchStatusClient::BatchStatusClient(const std::string &server_key)
     : BatchStatusImp(-1, -1)
-    , m_read_fifo_path(std::string(M_FIFO_PREFIX) + "-out-" + server_key)
-    , m_write_fifo_path(std::string(M_FIFO_PREFIX) + "-in-" + server_key)
+    , m_read_fifo_path(std::string(M_FIFO_PREFIX) +  server_key + "-out")
+    , m_write_fifo_path(std::string(M_FIFO_PREFIX) + server_key + "-in" )
     {
         // Assume that the server itself will make the fifo.
     }
