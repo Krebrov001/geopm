@@ -61,7 +61,6 @@ class BatchServerTest : public ::testing::Test
         std::vector<geopm_request_s> m_signal_config;
         std::vector<geopm_request_s> m_control_config;
         std::shared_ptr<BatchServerImp> m_batch_server;
-        std::shared_ptr<BatchServerImp> m_batch_server_empty;
 
 };
 
@@ -82,13 +81,6 @@ void BatchServerTest::SetUp()
                                                       m_batch_status,
                                                       m_signal_shmem,
                                                       m_control_shmem);
-    m_batch_server_empty = std::make_shared<BatchServerImp>(m_client_pid,
-							    std::vector<geopm_request_s> {},
-							    std::vector<geopm_request_s> {},
-							    *m_pio_ptr,
-							    m_batch_status,
-							    nullptr,
-							    nullptr);
 }
 
 void BatchServerTest::TearDown()
