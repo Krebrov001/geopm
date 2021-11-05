@@ -150,8 +150,8 @@ namespace geopm
             void check_return(int ret, const std::string &func_name) const;
 
             int m_client_pid;
-            std::vector<geopm_request_s> m_signal_config;
-            std::vector<geopm_request_s> m_control_config;
+            const std::vector<geopm_request_s> m_signal_config;
+            const std::vector<geopm_request_s> m_control_config;
             PlatformIO &m_pio;
             std::shared_ptr<SharedMemory> m_signal_shmem;
             std::shared_ptr<SharedMemory> m_control_shmem;
@@ -159,8 +159,8 @@ namespace geopm
             std::string m_server_key;
             int m_server_pid;
             bool m_is_active;
-            std::vector<int> m_signal_idx;
-            std::vector<int> m_control_idx;
+            std::vector<int> m_signal_handle;
+            std::vector<int> m_control_handle;
     };
 }
 

@@ -159,11 +159,11 @@ namespace geopm
     void BatchServerImp::push_requests(void)
     {
         for (const auto &req : m_signal_config) {
-            m_signal_idx.push_back(
+            m_signal_handle.push_back(
                 m_pio.push_signal(req.name, req.domain, req.domain_idx));
         }
         for (const auto &req : m_control_config) {
-            m_control_idx.push_back(
+            m_control_handle.push_back(
                 m_pio.push_control(req.name, req.domain, req.domain_idx));
         }
     }
@@ -177,8 +177,8 @@ namespace geopm
         m_pio.read_batch();
         double *buffer = (double *)m_signal_shmem->pointer();
         int buffer_idx = 0;
-        for (const auto &idx : m_signal_idx) {
-            buffer[buffer_idx] = m_pio.sample(idx);
+        for (const auto &handle : m_signal_handle) {
+            buffer[buffer_idx] = m_pio.sample(handle);
             ++buffer_idx;
         }
     }
@@ -191,8 +191,8 @@ namespace geopm
 
         double *buffer = (double *)m_control_shmem->pointer();
         int buffer_idx = 0;
-        for (const auto &idx : m_control_idx) {
-            m_pio.adjust(idx, buffer[buffer_idx]);
+        for (const auto &handle : m_control_handle) {
+            m_pio.adjust(handle, buffer[buffer_idx]);
             ++buffer_idx;
         }
         m_pio.write_batch();
